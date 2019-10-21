@@ -1,0 +1,7 @@
+{
+    "board": "arduino:avr:nano",
+    "configuration": "cpu=atmega328",
+    "sketch": "UART_Screen_controller.ino",
+    "output": "build",
+    "port": "/dev/ttyUSB0"
+}

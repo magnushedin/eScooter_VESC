@@ -1,0 +1,10 @@
+{
+  "builtInLibrariesFolders": "/usr/local/arduino-1.8.5/libraries",
+  "customBuildProperties": "build.path=/home/magnus/Arduino/Projects/eScooter_VESC/UART_Screen_controller/build,build.warn_data_percentage=75,runtime.tools.avrdude.path=/usr/local/arduino-1.8.5/hardware/tools/avr,runtime.tools.arduinoOTA.path=/usr/local/arduino-1.8.5/hardware/tools/avr,runtime.tools.avr-gcc.path=/usr/local/arduino-1.8.5/hardware/tools/avr",
+  "fqbn": "arduino:avr:nano:cpu=atmega328",
+  "hardwareFolders": "/usr/local/arduino-1.8.5/hardware",
+  "otherLibrariesFolders": "/home/magnus/Arduino/libraries",
+  "runtime.ide.version": "10805",
+  "sketchLocation": "/home/magnus/Arduino/Projects/eScooter_VESC/UART_Screen_controller/UART_Screen_controller.ino",
+  "toolsFolders": "/usr/local/arduino-1.8.5/tools-builder,/usr/local/arduino-1.8.5/hardware/tools/avr"
+}
