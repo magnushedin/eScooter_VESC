@@ -1,4 +1,4 @@
 *.ini
-UART_Motor_controller/build/build.options.json UART_Motor_controller/build/core UART_Motor_controller/build/includes.cache UART_Motor_controller/build/libraries UART_Motor_controller/build/preproc UART_Motor_controller/build/sketch UART_Motor_controller/build/UART_Motor_controller.ino.eep UART_Motor_controller/build/UART_Motor_controller.ino.elf UART_Motor_controller/build/UART_Motor_controller.ino.hex UART_Motor_controller/build/UART_Motor_controller.ino.with_bootloader.hex
-UART_Screen_controller/build/build.options.json UART_Screen_controller/build/core UART_Screen_controller/build/includes.cache UART_Screen_controller/build/libraries UART_Screen_controller/build/preproc UART_Screen_controller/build/sketch UART_Screen_controller/build/UART_Screen_controller.ino.eep UART_Screen_controller/build/UART_Screen_controller.ino.elf UART_Screen_controller/build/UART_Screen_controller.ino.hex UART_Screen_controller/build/UART_Screen_controller.ino.with_bootloader.hex
-VescUart
+UART_Motor_controller/build/*
+UART_Screen_controller/build/*
+VescUart/*
