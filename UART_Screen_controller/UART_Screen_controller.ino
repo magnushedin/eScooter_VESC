@@ -28,8 +28,13 @@ int cnt_main = 0;
 int cnt_screen_update = 0;
 
 i2c_int cnt_motor_ctrl;
+i2c_int cnt_motor_ctrl_prev;
 
 int cnt_print_switch = 0;
+
+char wheel[10] = "-/|\\";
+int wheel_cnt = 0;
+char tmp[10] = "";
 
 i2c_float avgInputCurrent;
 i2c_float ampHours;
@@ -41,21 +46,31 @@ i2c_float brake_current;
 // TODO: initiate i2c_float variables
 
 
-void draw(int screen_page) {
+void draw() {
   // graphic commands to redraw the complete screen should be placed here  
   //u8g.setFont(u8g_font_osb21);
   //u8g.drawStr( 0, 22, "VESC data");
 
   // box
-  u8g.drawBox(0, 0, avgInputCurrent.float_value, 12);
+  u8g.drawBox(0, 0, avgInputCurrent.float_value*10, 12);
   
   // row one
   u8g.setFont(u8g_font_fur14);
-  u8g.setPrintPos(0, 32);
-  u8g.print(cnt_motor_ctrl.int_value);
+  //u8g.setPrintPos(0, 32);
+  //u8g.print(cnt_motor_ctrl.int_value);
+
+  switch (wheel_cnt % 2) {
+    case 0:
+      u8g.drawStr(0, 32, "*\0");
+      break;
+    case 1:
+      u8g.drawStr(0, 32, " \0");
+      break;
+  }
 
   u8g.setPrintPos(60, 32);
-  u8g.print(cnt_screen_update);
+  u8g.print(avgInputCurrent.float_value);
+  //u8g.print(cnt_screen_update);
 
   // row two
   u8g.setFont(u8g_font_fur14);
@@ -91,7 +106,7 @@ void setup(void) {
 void loop(void) {
   cnt_main++;
 
-  if (cnt_main > 1) {
+  if (cnt_main > 0) {
     cnt_screen_update++;
     Wire.requestFrom(ID_MOTOR_CONTROLLER, BYTES_TO_RECEIVE); // request bytes from slave device
 
@@ -131,9 +146,15 @@ void loop(void) {
     cnt_main = 0;
   }
 
+  if (cnt_motor_ctrl_prev.int_value != cnt_motor_ctrl.int_value)
+  {
+    cnt_motor_ctrl_prev.int_value = cnt_motor_ctrl.int_value;
+    wheel_cnt++;
+  }
+
   // picture loop
-  u8g.firstPage();  
+  u8g.firstPage();
   do {
-    draw(1); } while( u8g.nextPage() );
+    draw(); } while( u8g.nextPage() );
 }
 

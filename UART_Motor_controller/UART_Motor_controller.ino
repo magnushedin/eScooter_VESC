@@ -41,6 +41,8 @@ int brake_value = 0;
 int throttle_count = 0;
 int brake_count = 0;
 
+int itIsTime = 0;
+
 int throttle_zero = DEFAULT_THROTTLE_ZERO;
 int brake_zero = DEFAULT_BRAKE_ZERO;
 
@@ -75,16 +77,16 @@ void setup(void) {
 
 
   cli(); //stop interrupts
-  //set timer1 interrupt at 1Hz
-  TCCR1A = 0;// set entire TCCR1A register to 0
-  TCCR1B = 0;// same for TCCR1B
-  TCNT1  = 0;//initialize counter value to 0
+         //set timer1 interrupt at 10Hz
+  TCCR1A = 0; // set entire TCCR1A register to 0
+  TCCR1B = 0; // same for TCCR1B
+  TCNT1 = 0;  //initialize counter value to 0
   // set compare match register for 1hz increments
-  OCR1A = 500;// = (16*10^6) / (1*1024) - 1 (must be <65536)
+  OCR1A = 262; // = (16*10^6) / (1*1024) - 1 (must be <65536)
   // turn on CTC mode
   TCCR1B |= (1 << WGM12);
-  // Set CS12 and CS10 bits for 1024 prescaler
-  TCCR1B |= (1 << CS12) | (1 << CS10);  
+  // Set CS10 and CS12 bits for 1024 prescaler
+  TCCR1B |= (1 << CS12) | (1 << CS10);
   // enable timer compare interrupt
   TIMSK1 |= (1 << OCIE1A);
   sei();
@@ -103,7 +105,7 @@ void setup(void) {
     delay(3);
   }
   brake_zero = (tmp_input_sum / 10) + 3;
-  
+
 
   // IMPLEMENT: Initialize the brake in similar way as throttel
 
@@ -145,6 +147,8 @@ ISR(TIMER1_COMPA_vect) //timer0 interrupt 2kHz
 
   cnt_irc++;
   //digitalWrite(BLINK_PIN, 0);
+
+  itIsTime++;
 }
 
 
@@ -153,7 +157,7 @@ ISR(TIMER1_COMPA_vect) //timer0 interrupt 2kHz
 void requestEvent(int howMany)
 {
   //digitalWrite(BLINK_PIN, 1);
-  Serial.println(howMany);
+  //Serial.println(howMany);
 
   Wire.write(cnt_main.int_array[0]);
   Wire.write(cnt_main.int_array[1]);
@@ -198,60 +202,51 @@ void loop(void) {
 
   // Read UART
 
-  digitalWrite(BLINK_PIN, 1);
-  if (UART.getVescValues())
-  {
-    avgInputCurrent.float_value = UART.data.avgInputCurrent;
-    //avgMotorCurrent = UART.data.avgMotorCurrent;
-    ampHours.float_value = UART.data.ampHours;
-    inpVoltage.float_value = UART.data.inpVoltage;
-    //sensor_mode = UART.data.sensor_mode;
-    //pwm_mode = UART.data.pwm_mode;
-    //comm_mode = UART.data.comm_mode;
-    rpm.float_value = UART.data.rpm;
-    //tachometer = UART.data.tachometer;
+  if (itIsTime >= 4) {
+    digitalWrite(BLINK_PIN, 1);
+    if (UART.getVescValues())
+    {
+      avgInputCurrent.float_value = UART.data.avgInputCurrent;
+      //avgMotorCurrent = UART.data.avgMotorCurrent;
+      ampHours.float_value = UART.data.ampHours;
+      inpVoltage.float_value = UART.data.inpVoltage;
+      //sensor_mode = UART.data.sensor_mode;
+      //pwm_mode = UART.data.pwm_mode;
+      //comm_mode = UART.data.comm_mode;
+      rpm.float_value = UART.data.rpm;
+      //tachometer = UART.data.tachometer;
+    }
+    digitalWrite(BLINK_PIN, 0);
+    itIsTime = 0;
   }
-  digitalWrite(BLINK_PIN, 0);
 
-  //delay(200);
 
   // Calculate mean values of input from each array
-  cli();
   throttle_value = input_mean(throttle_values, THROTTLE_FILTER);
   throttle_current.float_value = mapfloat(throttle_value, throttle_zero, MAX_THROTTLE_VOLTAGE, -0.3, MAX_MOTOR_CURRENT);
   brake_value = input_mean(brake_values, BRAKE_FILTER);
   brake_current.float_value = mapfloat(brake_value, brake_zero, MAX_BRAKE_VOLTAGE, 0, MAX_BRAKE_CURRENT);
-  sei();
 
   // Write throttle and brake values on UART
   if (brake_current.float_value > 0.5)
   {
     if (rpm.float_value > 10) {
-      cli();
       UART.setBrakeCurrent(brake_current.float_value);
-      sei();
     }
     else {
-      cli();
       UART.setCurrent(0);
-      sei();
     }
   }
   else
   {
     if (throttle_current.float_value > 0)
     {
-      cli();
       UART.setCurrent(throttle_current.float_value);
-      sei();
     }
     else
     {
-      cli();
       UART.setCurrent(0);
-      sei();
     }
   }
-  
-}
 
+}
