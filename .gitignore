@@ -1,4 +1,9 @@
-*.ini
 UART_Motor_controller/build/*
-UART_Screen_controller/build/*
 VescUart/*
+UART_Screen_controller/build/*
+*.ini
+*.zip
+EscooterController_Daldborg/
+UART_Screen_controller/build/
+UART_Screen_controller/build/*.*
+*.o
