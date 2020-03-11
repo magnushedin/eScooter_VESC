@@ -4,10 +4,12 @@
             "name": "Linux",
             "includePath": [
                 "/usr/local/arduino-1.8.5/tools/**",
-                "/usr/local/arduino-1.8.5/hardware/arduino/avr/**"
+                "/usr/local/arduino-1.8.5/hardware/arduino/avr/**",
+                "/opt/arduino-1.8.12/hardware/arduino/avr/**",
+                "/opt/arduino-1.8.12/tools/**"
             ],
             "forcedInclude": [
-                "/usr/local/arduino-1.8.5/hardware/arduino/avr/cores/arduino/Arduino.h"
+                "/opt/arduino-1.8.12/hardware/arduino/avr/cores/arduino/Arduino.h"
             ],
             "intelliSenseMode": "gcc-x64",
             "compilerPath": "/usr/bin/gcc",

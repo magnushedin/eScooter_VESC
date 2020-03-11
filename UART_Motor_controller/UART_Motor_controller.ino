@@ -154,7 +154,7 @@ ISR(TIMER1_COMPA_vect) //timer0 interrupt 2kHz
 
 // function that executes whenever data is requested by master
 // this function is registered as an event, see setup()
-void requestEvent(int howMany)
+void requestEvent(void)
 {
   //digitalWrite(BLINK_PIN, 1);
   //Serial.println(howMany);
