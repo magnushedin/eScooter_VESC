@@ -1,7 +1,7 @@
 {
-    "board": "arduino:avr:nano",
-    "configuration": "cpu=atmega328",
+    "board": "arduino:avr:mega",
+    "configuration": "cpu=atmega2560",
+    "port": "COM5",
     "sketch": "UART_Motor_controller.ino",
-    "output": "build",
-    "port": "/dev/ttyUSB0"
+    "output": "build"
 }

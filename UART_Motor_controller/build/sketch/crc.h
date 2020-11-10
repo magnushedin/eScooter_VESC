@@ -25,9 +25,17 @@
 #ifndef CRC_H_
 #define CRC_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Functions
  */
 unsigned short crc16(unsigned char *buf, unsigned int len);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif /* CRC_H_ */

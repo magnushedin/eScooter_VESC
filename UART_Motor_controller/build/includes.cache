@@ -1,47 +1,227 @@
 [
   {
-    "Sourcefile": "",
+    "Sourcefile": null,
     "Include": "",
-    "Includepath": "/usr/local/arduino-1.8.5/hardware/arduino/avr/cores/arduino"
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino"
   },
   {
-    "Sourcefile": "",
+    "Sourcefile": null,
     "Include": "",
-    "Includepath": "/usr/local/arduino-1.8.5/hardware/arduino/avr/variants/eightanaloginputs"
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\variants\\mega"
   },
   {
-    "Sourcefile": "/home/magnus/Arduino/Projects/eScooter_VESC/UART_Motor_controller/build/sketch/UART_Motor_controller.ino.cpp",
+    "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\UART_Motor_controller.ino.cpp",
     "Include": "Wire.h",
-    "Includepath": "/usr/local/arduino-1.8.5/hardware/arduino/avr/libraries/Wire/src"
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\Wire\\src"
   },
   {
-    "Sourcefile": "/home/magnus/Arduino/Projects/eScooter_VESC/UART_Motor_controller/build/sketch/UART_Motor_controller.ino.cpp",
-    "Include": "",
-    "Includepath": ""
+    "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\UART_Motor_controller.ino.cpp",
+    "Include": "Nextion.h",
+    "Includepath": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion"
   },
   {
-    "Sourcefile": "/home/magnus/Arduino/Projects/eScooter_VESC/UART_Motor_controller/build/sketch/VescUart.cpp",
+    "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\UART_Motor_controller.ino.cpp",
     "Include": "",
-    "Includepath": ""
+    "Includepath": null
   },
   {
-    "Sourcefile": "/home/magnus/Arduino/Projects/eScooter_VESC/UART_Motor_controller/build/sketch/buffer.cpp",
+    "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\VescUart.cpp",
     "Include": "",
-    "Includepath": ""
+    "Includepath": null
   },
   {
-    "Sourcefile": "/home/magnus/Arduino/Projects/eScooter_VESC/UART_Motor_controller/build/sketch/crc.cpp",
+    "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\buffer.c",
     "Include": "",
-    "Includepath": ""
+    "Includepath": null
   },
   {
-    "Sourcefile": "/usr/local/arduino-1.8.5/hardware/arduino/avr/libraries/Wire/src/Wire.cpp",
+    "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\crc.c",
     "Include": "",
-    "Includepath": ""
+    "Includepath": null
   },
   {
-    "Sourcefile": "/usr/local/arduino-1.8.5/hardware/arduino/avr/libraries/Wire/src/utility/twi.c",
+    "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\ringbuf.c",
     "Include": "",
-    "Includepath": ""
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\vesc.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\Wire\\src\\Wire.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\Wire\\src\\utility\\twi.c",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexButton.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexCheckbox.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexCrop.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexDualStateButton.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexGauge.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexGpio.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexHardware.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexHotspot.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexNumber.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexObject.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexPage.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexPicture.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexProgressBar.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexRadio.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexRtc.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexScrolltext.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexSlider.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexText.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexTimer.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexTouch.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexUpload.cpp",
+    "Include": "SPI.h",
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\SPI\\src"
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexUpload.cpp",
+    "Include": "SD.h",
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\libraries\\SD\\src"
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexUpload.cpp",
+    "Include": "SoftwareSerial.h",
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\SoftwareSerial\\src"
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexUpload.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexVariable.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion\\NexWaveform.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\SPI\\src\\SPI.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\libraries\\SD\\src\\File.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\libraries\\SD\\src\\SD.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\libraries\\SD\\src\\utility\\Sd2Card.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\libraries\\SD\\src\\utility\\SdFile.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\libraries\\SD\\src\\utility\\SdVolume.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\SoftwareSerial\\src\\SoftwareSerial.cpp",
+    "Include": "",
+    "Includepath": null
   }
 ]

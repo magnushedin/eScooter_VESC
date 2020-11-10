@@ -205,6 +205,7 @@ bool VescUart::processReadPacket(uint8_t * message) {
 		break;
 
 		default:
+		Serial.println("Process read packet failed");
 			return false;
 		break;
 	}
@@ -216,7 +217,7 @@ bool VescUart::getVescValues(void) {
 	uint8_t payload[256];
 
 	packSendPayload(command, 1);
-	// delay(1); //needed, otherwise data is not read
+	delay(1); //needed, otherwise data is not read
 
 	int lenPayload = receiveUartMessage(payload);
 
@@ -226,6 +227,8 @@ bool VescUart::getVescValues(void) {
 	}
 	else
 	{
+		//Serial.print("Payload length to short: ");
+		Serial.println(lenPayload);
 		return false;
 	}
 }
