@@ -13,6 +13,7 @@ c:\Projects\eScooter_VESC\UART_Motor_controller\build\sketch\UART_Motor_controll
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\variants\mega/pins_arduino.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\libraries\Wire\src/Wire.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino/Stream.h \
+ C:\Projects\eScooter_VESC\UART_Motor_controller\include\DisplayData.h \
  c:\Projects\eScooter_VESC\UART_Motor_controller\build\sketch\buffer.h \
  c:\Projects\eScooter_VESC\UART_Motor_controller\build\sketch\datatypes.h \
  c:\Projects\eScooter_VESC\UART_Motor_controller\build\sketch\vesc.h \

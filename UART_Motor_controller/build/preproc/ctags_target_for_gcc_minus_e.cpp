@@ -1,12 +1,14 @@
 # 1 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
 # 2 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
 
-//#include "\include\DisplayData.h"
+# 4 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
 # 5 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
 # 6 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
 # 7 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
 # 8 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
-# 22 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
+# 39 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
+// From https://github.com/vedderb/bldc/blob/master/commands.c
+# 52 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
 NexNumber n_speed = NexNumber(0, 2, "n_speed"); //integer value
 NexNumber x_volt = NexNumber(0, 3, "x_volt");
 NexNumber x_amp = NexNumber(0, 6, "x_amp");
@@ -14,19 +16,13 @@ NexDSButton bt_light = NexDSButton(0, 1, "bt_light");
 
 NexTouch *nex_listen_list[] =
 {
-  &bt_light,
-  
-# 30 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 3 4
- __null
+    &bt_light,
+    
+# 60 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 3 4
+   __null
 
-# 31 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
+# 61 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
 };
-
-//VescUart UART;
-
-bool blink_state = 0;
-
-int cnt_irc = 0;
 
 
 float throttle_current;
@@ -38,128 +34,127 @@ int brake_value = 0;
 int throttle_count = 0;
 int brake_count = 0;
 
-int itIsTime = 0;
-
 int throttle_zero = (210);
 int brake_zero = (170);
 
-/*
 
-i2c_float avgInputCurrent;
+typedef struct
+{
+    DisplayDataType type;
+    VescDataType VescData;
+    CtrlDataType CtrlData;
+} DisplayDataStructType;
 
-//float avgMotorCurrent = 0;
+typedef struct
+{
+    int initialThrottleValue;
+    int initialBrakeValue;
+    int initialOtherBrakeValue;
+    int rawThrottleValue;
+    int rawBrakeValue;
+    int rawOtherBrakeValue;
+    long throttleValue;
+    long brakeValue;
+    long otherBrakeValue;
+    long screenSaveCnt;
+    int modeCnt;
+    float rpm;
+    DisplayDataType prevDisplayType;
+} CtxType;
 
-i2c_float ampHours;
+static CtxType Ctx;
+static DisplayDataStructType DisplayData; // local storage of display data
 
-i2c_float inpVoltage;
 
-i2c_float rpm;
-
-int tachometer = 0;
-
-//byte sensor_mode = 0;
-
-//byte pwm_mode = 0;
-
-//byte comm_mode = 0;
-
-*/
-# 66 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
 bool light_on = 0x0;
 void buttonBtLight_Pop_Cbk(void *ptr)
 {
-  light_on = !light_on;
-  digitalWrite(13, light_on);
+    light_on = !light_on;
+    digitalWrite(13, light_on);
 }
 
-// TODO: initialize i2c_floats
 
 float mapfloat(long x, long in_min, long in_max, long out_min, long out_max)
 {
-  return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
+    return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
 }
 
-
-void setup(void) {
-  int setup_cnt = 0;
-  bool tmp = 0x0;
-  int tmp_input_sum = 0;
-
-  nexInit();
-  bt_light.attachPop(buttonBtLight_Pop_Cbk, &bt_light);
-
-  Serial.begin(115200); //For debugg
-  //Serial.println("Setup");
-
-  Serial2.begin(115200); //VESC 1
-  while(!Serial2) {
-  }
-  //UART.setSerialPort(&Serial2);
-  //UART.setDebugPort(&Serial);
-
-  // VESC
-  vescInit(&Serial2);
-
-  //pinMode(8, OUTPUT);
-
-  // Set throttle zero position
-  for (int i = 0; i < 10; i++) {
-    tmp_input_sum += analogRead((A1));
-    delay(3);
-  }
-  throttle_zero = (tmp_input_sum / 10) + 3;
-
-  // Set brake zero position
-  tmp_input_sum = 0;
-  for (int i = 0; i < 10; i++) {
-    tmp_input_sum += analogRead((A1));
-    delay(3);
-  }
-  brake_zero = (tmp_input_sum / 10) + 3;
-
-
-  // IMPLEMENT: Initialize the brake in similar way as throttel
-
-  Wire.begin(8); // join i2c bus with address #8
-  Wire.onRequest(requestEvent); // register even
-}
-
-//IMPLEMENT: Implement some kind of functionality for adapting max position of throttle and brake
-
-//IMPLEMENT: Table for throttele and brake for setting exponential curves.
 
 int input_mean(int *input_values, int filter_count)
 {
-  int tot = 0;
-  for (int i = 0; i < filter_count; i++)
-  {
-    tot += input_values[i];
-  }
-  return tot/filter_count;
+    int tot = 0;
+    for (int i = 0; i < filter_count; i++)
+    {
+       tot += input_values[i];
+    }
+    return tot/filter_count;
 }
 
 
-void readSensors() //timer0 interrupt 2kHz
+// Set new value and return the average value of stored values
+unsigned char getFilteredBatteryValue(unsigned char newValue)
 {
-  //digitalWrite(BLINK_PIN, 1);
-  throttle_values[throttle_count] = analogRead((A1));
-  brake_values[brake_count] = analogRead((A5));
+    static unsigned char batteryValues[(20)] = {0};
+    static unsigned int idx = 0;
+    unsigned int sum = 0;
 
-  brake_count++;
-  if (brake_count >= (5)) {
-    brake_count = 0;
-  }
+    batteryValues[idx++] = newValue;
+    if (idx >= (20)) {
+        idx = 0;
+    }
 
-  throttle_count++;
-  if (throttle_count >= (5))
-  {
-    throttle_count = 0;
-  }
+    for (int i = 0; i < (20); i++) {
+        sum += batteryValues[i];
+    }
 
-  cnt_irc++;
-  //digitalWrite(BLINK_PIN, 0);
+    return sum / (20);
+}
 
-  itIsTime++;
+
+// Set new value and return the average value of stored values
+unsigned int getFilteredVoltageValue(unsigned int newValue)
+{
+    static unsigned int voltageValues[(20)] = {0};
+    static unsigned int idx = 0;
+    unsigned int sum = 0;
+
+    voltageValues[idx++] = newValue;
+    if (idx >= (20)) {
+        idx = 0;
+    }
+
+    for (int i = 0; i < (20); i++) {
+        sum += voltageValues[i];
+    }
+
+    return sum / (20);
+}
+
+
+void readSensors()
+{
+    //digitalWrite(BLINK_PIN, 1);
+    throttle_values[throttle_count] = analogRead((A1));
+    brake_values[brake_count] = analogRead((A5));
+
+    brake_count++;
+    if (brake_count >= (5)) {
+      brake_count = 0;
+    }
+
+    throttle_count++;
+    if (throttle_count >= (5))
+    {
+      throttle_count = 0;
+    }
+
+    //digitalWrite(BLINK_PIN, 0);
+
+    // Calculate mean values of input from each array
+    throttle_value = input_mean(throttle_values, (5));
+    throttle_current= mapfloat(throttle_value, throttle_zero, (980), -0.3, (52));
+    brake_value = input_mean(brake_values, (5));
+    brake_current = mapfloat(brake_value, brake_zero, (860), 0, (40));
 }
 
 
@@ -167,8 +162,7 @@ void readSensors() //timer0 interrupt 2kHz
 // this function is registered as an event, see setup()
 void requestEvent(int howMany)
 {
-  //digitalWrite(BLINK_PIN, 1);
-  //Serial.println(howMany);
+
 /*
 
   Wire.write(cnt_main.int_array[0]);
@@ -238,100 +232,157 @@ void requestEvent(int howMany)
   //digitalWrite(BLINK_PIN, 0);
 
 */
-# 205 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
+# 237 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
 }
 
+
+void extractVescData(unsigned char buf[], int bufLen)
+{
+    COMM_PACKET_ID packetId;
+    int32_t ind = 0;
+    uint32_t mask;
+
+    if (buf == 
+# 246 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 3 4
+              __null
+# 246 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
+                  ) {
+        return;
+    }
+
+    packetId = (COMM_PACKET_ID)buf[0];
+    ind++;
+
+    switch(packetId) {
+        case COMM_GET_VALUES_SETUP_SELECTIVE:
+        mask = buffer_get_uint32((uint8_t*)buf, &ind); // Used to figure out which data is comming.
+
+        switch (mask) {
+            case (0x000000A1UL) /* FET temp, Erpm, Voltage*/:
+            DisplayData.VescData.fetTemp = buffer_get_float16((uint8_t*)buf, 10.0, &ind);
+            Ctx.rpm = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
+            DisplayData.VescData.inpVoltage = getFilteredVoltageValue((unsigned int)(buffer_get_float16((uint8_t*)buf, 10.0, &ind) * 10));
+            break;
+
+            case (0x00010128UL) /* Current,Erpm, Battery level, Fault code*/:
+            DisplayData.VescData.avgInputCurrent = buffer_get_float32((uint8_t*)buf, 100.0, &ind);
+            Ctx.rpm = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
+            DisplayData.VescData.batteryLevel = getFilteredBatteryValue((unsigned char)(buffer_get_float16((uint8_t*)buf, 1000.0, &ind) * 100));
+            DisplayData.VescData.faultCode = buf[ind++];
+            break;
+        }
+        //DisplayData.VescData.rpm = Ctx.rpm;
+        break;
+    }
+}
+
+
+void processVescRxData()
+{
+    if (vescRxDataAvailable() > 0) {
+        unsigned char msgBuf[64];
+        int len;
+
+        memset(msgBuf, 0, sizeof(msgBuf));
+        len = vescTryDecodePacket(msgBuf, sizeof(msgBuf));
+
+        if (len > 0) {
+            extractVescData(msgBuf, len);
+        }
+    }
+}
+
+
+static void readVescData(uint32_t mask)
+{
+    processVescRxData();
+    vescRequestData(mask);
+}
+
+
+void setup(void) {
+    int setup_cnt = 0;
+    bool tmp = 0x0;
+    int tmp_input_sum = 0;
+
+    nexInit();
+    bt_light.attachPop(buttonBtLight_Pop_Cbk, &bt_light);
+
+    Serial.begin(115200); //For debug
+
+    Serial2.begin(115200); //VESC 1
+    while(!Serial2) {;}
+
+    // VESC
+    vescInit(&Serial2);
+
+    // Set throttle zero position
+    for (int i = 0; i < 10; i++) {
+        tmp_input_sum += analogRead((A1));
+        delay(3);
+    }
+    throttle_zero = (tmp_input_sum / 10) + 3;
+
+    // Set brake zero position
+    tmp_input_sum = 0;
+    for (int i = 0; i < 10; i++) {
+        tmp_input_sum += analogRead((A1));
+        delay(3);
+    }
+    brake_zero = (tmp_input_sum / 10) + 3;
+
+    //Wire.begin(8);                // join i2c bus with address #8
+    //Wire.onRequest(requestEvent); // register even
+}
+
+
 void loop(void) {
-  readSensors();
+    static unsigned long lastTS = 0;
+    static unsigned long loopCnt = 0;
+    readSensors();
 
-  nexLoop(nex_listen_list);
+    nexLoop(nex_listen_list);
+    //Serial.println(Ctx.rpm);
+    //Serial.println(DisplayData.VescData.inpVoltage);
+    //n_speed.setValue((int)rpm.float_value);^M
+    //x_amp.setValue((int)(ampHours.float_value*100));
 
-  //digitalWrite(BLINK_PIN, blink_state);
-  //blink_state = !blink_state;
+    // Read VESC data
+    if (loopCnt % (50 / (20)) == 0) {
+        static unsigned char read_vesc_count = 0;
 
-  // Read UART
-
-/*
-
-  if (itIsTime >= 10) {
-
-    //digitalWrite(BLINK_PIN, 1);
-
-    if (UART.getVescValues())
-
-    {
-
-      avgInputCurrent.float_value = UART.data.avgInputCurrent;
-
-      //avgMotorCurrent = UART.data.avgMotorCurrent;
-
-      ampHours.float_value = UART.data.ampHours;
-
-      inpVoltage.float_value = UART.data.inpVoltage;
-
-      //sensor_mode = UART.data.sensor_mode;
-
-      //pwm_mode = UART.data.pwm_mode;
-
-      //comm_mode = UART.data.comm_mode;
-
-      rpm.float_value = UART.data.rpm;
-
-      tachometer = UART.data.tachometer;
-
-      
-
-      x_volt.setValue((int)(inpVoltage.float_value*100));
-
-      n_speed.setValue((int)rpm.float_value);
-
-      x_amp.setValue((int)(ampHours.float_value*100));
-
-      Serial.print("Amp: ");
-
-      Serial.println(ampHours.float_value);
-
-      Serial.println("Read from VESC success");
-
+        // Using two messages to reduce load spikes on the serial bus.
+        if ((read_vesc_count % 2) == 0) {
+            readVescData((0x000000A1UL) /* FET temp, Erpm, Voltage*/);
+            //Serial.println("VESC_DATA_1");
+        }
+        else {
+            readVescData((0x00010128UL) /* Current,Erpm, Battery level, Fault code*/);
+            //Serial.println("VESC_DATA_2");
+        }
+        read_vesc_count++;
     }
 
-    else
-
-    {
-
-      Serial.println("Read from VESC failed");
-
+    loopCnt++;
+    if (loopCnt >= ((50 / (20)) * (50 / (20)))) {
+        loopCnt = 0;
     }
 
-    //digitalWrite(BLINK_PIN, 0);
-
-    itIsTime = 0;
-
-  }
-
-  */
-# 249 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
-  // Calculate mean values of input from each array
-  throttle_value = input_mean(throttle_values, (5));
-  throttle_current= mapfloat(throttle_value, throttle_zero, (980), -0.3, (52));
-  brake_value = input_mean(brake_values, (5));
-  brake_current = mapfloat(brake_value, brake_zero, (860), 0, (40));
-
-  // Write throttle and brake values on UART
-  if (brake_current > 0.5)
-  {
-    vescSetBrakeCurrent(brake_current);
-  }
-  else
-  {
-    if (throttle_current > 0)
+    // Write throttle and brake values on UART
+    if (brake_current > 0.5)
     {
-      vescSetCurrent(throttle_current);
+        vescSetBrakeCurrent(brake_current);
     }
     else
     {
-      vescSetCurrent(0);
+        if (throttle_current > 0)
+        {
+            vescSetCurrent(throttle_current);
+        }
+        else
+        {
+            vescSetCurrent(0);
+        }
     }
-  }
 
 }

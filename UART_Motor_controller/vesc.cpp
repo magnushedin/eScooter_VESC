@@ -149,7 +149,7 @@ void vescRequestData(uint32_t mask)
     packetLen = createPacket(cmd, idx, txBuf, sizeof(txBuf));
 
     if (serialPort->availableForWrite() >= packetLen) {
-        serialPort->write(txBuf, packetLen);
+        serialPort->write(txBuf, packetLen - 1); //TODO: Fix this
     }
     else {
         serialTxOverflows++;
