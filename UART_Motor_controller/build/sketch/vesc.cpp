@@ -138,6 +138,7 @@ void vescSetRpm(int32_t rpm)
 //------------------------------------------------------------------------------
 void vescRequestData(uint32_t mask)
 {
+    //Serial.println("vescRequestData");
     unsigned char cmd[5];
     unsigned char txBuf[sizeof(cmd) + VESC_HEADER_TRAILER_SIZE];
     int32_t idx = 0;
@@ -149,9 +150,11 @@ void vescRequestData(uint32_t mask)
     packetLen = createPacket(cmd, idx, txBuf, sizeof(txBuf));
 
     if (serialPort->availableForWrite() >= packetLen) {
-        serialPort->write(txBuf, packetLen - 1); //TODO: Fix this
+        //Serial.println(txBuf[0]);
+        serialPort->write(txBuf, packetLen);
     }
     else {
+        Serial.println("full buffer");
         serialTxOverflows++;
     }
 }
@@ -251,8 +254,9 @@ void vescGetSerialStats(VescSerialStatType *stats)
 //  SerialEvent occurs whenever a new data comes in the hardware serial RX. This
 //  routine is run between each time loop() runs, so using delay inside loop can
 //  delay response. Multiple bytes of data may be available.
-void serialEvent2() { // TODO: Change event to be a parameter as serialPort
+void serialEvent3() { // TODO: Change event to be a parameter as serialPort
     while (serialPort->available()) {
-        ringbufWrite(&RxRingbuf, (unsigned char) Serial.read());
+        ringbufWrite(&RxRingbuf, (unsigned char) serialPort->read());
+        //Serial.println("Reading UART from VESC");
     }
 }

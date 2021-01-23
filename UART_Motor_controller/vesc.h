@@ -17,12 +17,12 @@ typedef struct {
 
 static unsigned int createPacket(unsigned char *data, unsigned int dataLen, unsigned char *txBuf, unsigned int txBufLen);
 
-void vescInit(HardwareSerial* port);
-void vescSetBrakeCurrent(float current);
-void vescSetCurrent(float current);
-void vescSetHandbrake(float current);
-void vescSetRpm(int32_t rpm);
-void vescRequestData(uint32_t mask);
+void vescInit();
+void vescSetBrakeCurrent(float current, HardwareSerial *serialPort);
+void vescSetCurrent(float current, HardwareSerial *serialPort);
+void vescSetHandbrake(float current, HardwareSerial *serialPort);
+void vescSetRpm(int32_t rpm, HardwareSerial *serialPort);
+void vescRequestData(uint32_t mask, HardwareSerial *serialPort);
 int vescTryDecodePacket(unsigned char dataBuf[], unsigned int dataLen);
 int vescRxDataAvailable();
 void vescGetSerialStats(VescSerialStatType *stats);

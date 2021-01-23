@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #line 1 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
-#include <Wire.h>
+//#include <Wire.h>
 
 #include "C:\Projects\eScooter_VESC\UART_Motor_controller\include\DisplayData.h"
 #include "buffer.h"
@@ -30,7 +30,6 @@
 #define BRAKE_FILTER          (5)
 #define DEFAULT_THROTTLE_ZERO (210)
 #define DEFAULT_BRAKE_ZERO    (170)
-#define BLINK_PIN             (13)
 #define MAX_BRAKE_CURRENT     (40)
 #define MAX_BRAKE_VOLTAGE     (860)
 #define MAX_MOTOR_CURRENT     (52)
@@ -40,7 +39,7 @@
 
 // From https://github.com/vedderb/bldc/blob/master/commands.c
 #define VESC_DATA1   (0x000000A1UL) // FET temp, Erpm, Voltage
-#define VESC_DATA2   (0x00010128UL) // Current,Erpm, Battery level, Fault code
+#define VESC_DATA2   (0x00010128UL) // Current, Erpm, Battery level, Fault code
 
 #define CTRL_UPDATE_INTERVAL_MS (20)
 #define MODE_CHANGE_COUNT       (1000 / CTRL_UPDATE_INTERVAL_MS)
@@ -53,6 +52,7 @@
 
 NexNumber n_speed = NexNumber(0, 2, "n_speed"); //integer value
 NexNumber x_volt = NexNumber(0, 3, "x_volt");
+
 NexNumber x_amp = NexNumber(0, 6, "x_amp");
 NexDSButton bt_light = NexDSButton(0, 1, "bt_light");
 
@@ -334,11 +334,11 @@ void setup(void) {
 
     Serial.begin(115200);  //For debug
 
-    Serial2.begin(115200);  //VESC 1
-    while(!Serial2) {;}
+    Serial3.begin(115200);  //VESC 1
+    while(!Serial3) {;}
 
     // VESC
-    vescInit(&Serial2);
+    vescInit(&Serial3);
 
     // Set throttle zero position
     for (int i = 0; i < 10; i++) {
@@ -368,8 +368,6 @@ void loop(void) {
     nexLoop(nex_listen_list);
     //Serial.println(Ctx.rpm);
     //Serial.println(DisplayData.VescData.inpVoltage);
-    //n_speed.setValue((int)rpm.float_value);^M
-    //x_amp.setValue((int)(ampHours.float_value*100));
 
     // Read VESC data
     if (loopCnt % READ_VESC_COUNT == 0) {
@@ -378,10 +376,14 @@ void loop(void) {
         // Using two messages to reduce load spikes on the serial bus.
         if ((read_vesc_count % 2) == 0) {
             readVescData(VESC_DATA1);
+            //delay(500);
+            n_speed.setValue((int)Ctx.rpm);
+            x_volt.setValue((int)(DisplayData.VescData.inpVoltage)*10);
             //Serial.println("VESC_DATA_1");
         }
         else {
             readVescData(VESC_DATA2);
+            x_amp.setValue((int)DisplayData.VescData.avgInputCurrent);
             //Serial.println("VESC_DATA_2");
         }
         read_vesc_count++;

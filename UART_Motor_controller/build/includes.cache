@@ -11,11 +11,6 @@
   },
   {
     "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\UART_Motor_controller.ino.cpp",
-    "Include": "Wire.h",
-    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\Wire\\src"
-  },
-  {
-    "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\UART_Motor_controller.ino.cpp",
     "Include": "Nextion.h",
     "Includepath": "C:\\Users\\magnu\\Documents\\Arduino\\libraries\\ITEADLIB_Arduino_Nextion"
   },
@@ -46,16 +41,6 @@
   },
   {
     "Sourcefile": "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\build\\sketch\\vesc.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\Wire\\src\\Wire.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\Wire\\src\\utility\\twi.c",
     "Include": "",
     "Includepath": null
   },

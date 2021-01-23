@@ -44,15 +44,14 @@ static unsigned int createPacket(unsigned char *data, unsigned int dataLen, unsi
 }
 
 //------------------------------------------------------------------------------
-void vescInit(HardwareSerial *port)
+void vescInit(void)
 {
     // RX Serial buffer
     ringbufInit(&RxRingbuf, RxBuffer, sizeof(RxBuffer));
-    serialPort = port;
 }
 
 //------------------------------------------------------------------------------
-void vescSetBrakeCurrent(float current)
+void vescSetBrakeCurrent(float current, HardwareSerial *serialPort)
 {
     unsigned char cmd[5];
     unsigned char txBuf[sizeof(cmd) + VESC_HEADER_TRAILER_SIZE];
@@ -73,7 +72,7 @@ void vescSetBrakeCurrent(float current)
 }
 
 //------------------------------------------------------------------------------
-void vescSetCurrent(float current)
+void vescSetCurrent(float current, HardwareSerial *serialPort)
 {
     unsigned char cmd[5];
     unsigned char txBuf[sizeof(cmd) + VESC_HEADER_TRAILER_SIZE];
@@ -87,14 +86,16 @@ void vescSetCurrent(float current)
 
     if (serialPort->availableForWrite() >= packetLen) {
         serialPort->write(txBuf, packetLen);
+        //Serial.println("Sending data");
     }
     else {
         serialTxOverflows++;
+        //Serial.println("buffer overflow");
     }
 }
 
 //------------------------------------------------------------------------------
-void vescSetHandbrake(float current)
+void vescSetHandbrake(float current, HardwareSerial *serialPort)
 {
     unsigned char cmd[5];
     unsigned char txBuf[sizeof(cmd) + VESC_HEADER_TRAILER_SIZE];
@@ -115,7 +116,7 @@ void vescSetHandbrake(float current)
 }
 
 //------------------------------------------------------------------------------
-void vescSetRpm(int32_t rpm)
+void vescSetRpm(int32_t rpm, HardwareSerial *serialPort)
 {
     unsigned char cmd[5];
     unsigned char txBuf[sizeof(cmd) + VESC_HEADER_TRAILER_SIZE];
@@ -136,8 +137,9 @@ void vescSetRpm(int32_t rpm)
 }
 
 //------------------------------------------------------------------------------
-void vescRequestData(uint32_t mask)
+void vescRequestData(uint32_t mask, HardwareSerial *serialPort)
 {
+    //Serial.println("vescRequestData");
     unsigned char cmd[5];
     unsigned char txBuf[sizeof(cmd) + VESC_HEADER_TRAILER_SIZE];
     int32_t idx = 0;
@@ -149,9 +151,11 @@ void vescRequestData(uint32_t mask)
     packetLen = createPacket(cmd, idx, txBuf, sizeof(txBuf));
 
     if (serialPort->availableForWrite() >= packetLen) {
-        serialPort->write(txBuf, packetLen - 1); //TODO: Fix this
+        //Serial.println(txBuf[0]);
+        serialPort->write(txBuf, packetLen);
     }
     else {
+        Serial.println("buffer full");
         serialTxOverflows++;
     }
 }
@@ -251,8 +255,24 @@ void vescGetSerialStats(VescSerialStatType *stats)
 //  SerialEvent occurs whenever a new data comes in the hardware serial RX. This
 //  routine is run between each time loop() runs, so using delay inside loop can
 //  delay response. Multiple bytes of data may be available.
-void serialEvent2() { // TODO: Change event to be a parameter as serialPort
-    while (serialPort->available()) {
-        ringbufWrite(&RxRingbuf, (unsigned char) Serial.read());
+void serialEvent3()
+{
+  unsigned char data;
+    //Serial.println("Data available on Serial3, Reading UART from VESC1");
+    while (Serial3.available()) {
+        data = Serial3.read();
+        //Serial.print("Serial data: ");
+        //Serial.println(data);
+        ringbufWrite(&RxRingbuf, (unsigned char) data);
     }
 }
+
+//------------------------------------------------------------------------------
+// Don't care about serial5 at the moment. This is VESC2
+void serialEvent5()
+{
+    while (Serial5.available()) {
+        (void)Serial5.read();
+    }
+}
+

@@ -1,16 +1,17 @@
 # 1 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
-# 2 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
+//#include <Wire.h>
 
 # 4 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
 # 5 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
 # 6 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
 # 7 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
 # 8 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino" 2
-# 39 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
+# 38 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
 // From https://github.com/vedderb/bldc/blob/master/commands.c
-# 52 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
+# 51 "c:\\Projects\\eScooter_VESC\\UART_Motor_controller\\UART_Motor_controller.ino"
 NexNumber n_speed = NexNumber(0, 2, "n_speed"); //integer value
 NexNumber x_volt = NexNumber(0, 3, "x_volt");
+
 NexNumber x_amp = NexNumber(0, 6, "x_amp");
 NexDSButton bt_light = NexDSButton(0, 1, "bt_light");
 
@@ -264,7 +265,7 @@ void extractVescData(unsigned char buf[], int bufLen)
             DisplayData.VescData.inpVoltage = getFilteredVoltageValue((unsigned int)(buffer_get_float16((uint8_t*)buf, 10.0, &ind) * 10));
             break;
 
-            case (0x00010128UL) /* Current,Erpm, Battery level, Fault code*/:
+            case (0x00010128UL) /* Current, Erpm, Battery level, Fault code*/:
             DisplayData.VescData.avgInputCurrent = buffer_get_float32((uint8_t*)buf, 100.0, &ind);
             Ctx.rpm = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
             DisplayData.VescData.batteryLevel = getFilteredBatteryValue((unsigned char)(buffer_get_float16((uint8_t*)buf, 1000.0, &ind) * 100));
@@ -310,11 +311,11 @@ void setup(void) {
 
     Serial.begin(115200); //For debug
 
-    Serial2.begin(115200); //VESC 1
-    while(!Serial2) {;}
+    Serial3.begin(115200); //VESC 1
+    while(!Serial3) {;}
 
     // VESC
-    vescInit(&Serial2);
+    vescInit(&Serial3);
 
     // Set throttle zero position
     for (int i = 0; i < 10; i++) {
@@ -344,8 +345,6 @@ void loop(void) {
     nexLoop(nex_listen_list);
     //Serial.println(Ctx.rpm);
     //Serial.println(DisplayData.VescData.inpVoltage);
-    //n_speed.setValue((int)rpm.float_value);^M
-    //x_amp.setValue((int)(ampHours.float_value*100));
 
     // Read VESC data
     if (loopCnt % (50 / (20)) == 0) {
@@ -354,10 +353,14 @@ void loop(void) {
         // Using two messages to reduce load spikes on the serial bus.
         if ((read_vesc_count % 2) == 0) {
             readVescData((0x000000A1UL) /* FET temp, Erpm, Voltage*/);
+            //delay(500);
+            n_speed.setValue((int)Ctx.rpm);
+            x_volt.setValue((int)(DisplayData.VescData.inpVoltage)*10);
             //Serial.println("VESC_DATA_1");
         }
         else {
-            readVescData((0x00010128UL) /* Current,Erpm, Battery level, Fault code*/);
+            readVescData((0x00010128UL) /* Current, Erpm, Battery level, Fault code*/);
+            x_amp.setValue((int)DisplayData.VescData.avgInputCurrent);
             //Serial.println("VESC_DATA_2");
         }
         read_vesc_count++;
