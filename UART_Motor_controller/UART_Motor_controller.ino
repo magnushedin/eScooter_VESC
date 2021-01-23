@@ -232,49 +232,6 @@ void readSensors()
 }
 
 
-// function that executes whenever data is requested by master
-// this function is registered as an event, see setup()
-void requestEvent(int howMany)
-{
-
-/*
-  Wire.write(cnt_main.int_array[0]);
-  Wire.write(cnt_main.int_array[1]);
-
-  Wire.write(rpm.byte_array[0]);
-  Wire.write(rpm.byte_array[1]);
-  Wire.write(rpm.byte_array[2]);
-  Wire.write(rpm.byte_array[3]);
-
-  Wire.write(avgInputCurrent.byte_array[0]);
-  Wire.write(avgInputCurrent.byte_array[1]);
-  Wire.write(avgInputCurrent.byte_array[2]);
-  Wire.write(avgInputCurrent.byte_array[3]);
-
-  Wire.write(ampHours.byte_array[0]);
-  Wire.write(ampHours.byte_array[1]);
-  Wire.write(ampHours.byte_array[2]);
-  Wire.write(ampHours.byte_array[3]);
-
-  Wire.write(inpVoltage.byte_array[0]);
-  Wire.write(inpVoltage.byte_array[1]);
-  Wire.write(inpVoltage.byte_array[2]);
-  Wire.write(inpVoltage.byte_array[3]);
-
-  Wire.write(throttle_current.byte_array[0]);
-  Wire.write(throttle_current.byte_array[1]);
-  Wire.write(throttle_current.byte_array[2]);
-  Wire.write(throttle_current.byte_array[3]);
-
-  Wire.write(brake_current.byte_array[0]);
-  Wire.write(brake_current.byte_array[1]);
-  Wire.write(brake_current.byte_array[2]);
-  Wire.write(brake_current.byte_array[3]);
-  //digitalWrite(BLINK_PIN, 0);
-*/
-}
-
-
 void extractVescData(unsigned char buf[], int bufLen)
 {
     COMM_PACKET_ID packetId;
