@@ -63,8 +63,8 @@ NexNumber x_ampHours = NexNumber(0, 5, "x_amphours");
 NexNumber x_amp = NexNumber(0, 9, "x_amp");
 NexProgressBar j_batt = NexProgressBar(0, 11, "j_batt");
 
-NexDSButton bt_uartFront = NexDSButton(1, 8, "bt_uart_front");
-NexDSButton bt_uartRear = NexDSButton(1, 9, "bt_uart_rear");
+NexDSButton bt_uartFront = NexDSButton(1, 6, "bt_uart_front");
+NexDSButton bt_uartRear = NexDSButton(1, 7, "bt_uart_rear");
 
 NexNumber x_fet_temp = NexNumber(3, 5, "x0");
 
@@ -367,12 +367,12 @@ void loop(void) {
         if ((read_vesc_count % 2) == 0) {
             readVescData(VESC_DATA1, &Serial3);
             n_speed.setValue((int)DisplayData.VescData.speed);
-            x_volt.setValue((int)(DisplayData.VescData.inpVoltage)*10);
+            x_volt.setValue((int)(DisplayData.VescData.inpVoltage));
             x_ampHours.setValue((int)DisplayData.VescData.ahUsed);
             Serial.print("speed, volt: ");
             Serial.print(DisplayData.VescData.speed);
             Serial.print(", ");
-            Serial.println(DisplayData.VescData.inpVoltage*10);
+            Serial.println(DisplayData.VescData.inpVoltage);
         }
         else {
             readVescData(VESC_DATA2, &Serial3);
