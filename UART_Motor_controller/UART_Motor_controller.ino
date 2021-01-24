@@ -40,8 +40,11 @@
 
 
 // From https://github.com/vedderb/bldc/blob/master/commands.c
-#define VESC_DATA1   (0x000000A1UL) // FET temp, Erpm, Voltage
-#define VESC_DATA2   (0x00010128UL) // Current, Erpm, Battery level, Fault code
+// #define VESC_DATA1   (0x000000A1UL) // FET temp, Erpm, Voltage
+// #define VESC_DATA1   (0x000063DDUL) // FET temp, current tot, current in tot, duty cycle, speed, Voltage, battery level, ah tot, distance, distance abs
+#define VESC_DATA1   (0x000002C1UL) //Fet temp, Speed, Voltage, Ah used
+#define VESC_DATA2   (0x00010128UL) // Current in, Erpm, Battery level, Fault code
+
 
 #define CTRL_UPDATE_INTERVAL_MS (20)
 #define MODE_CHANGE_COUNT       (1000 / CTRL_UPDATE_INTERVAL_MS)
@@ -53,16 +56,17 @@
 
 
 // --- Nextion display ---
+NexDSButton bt_light = NexDSButton(0, 1, "bt_light");
 NexNumber n_speed = NexNumber(0, 2, "n_speed"); //integer value
 NexNumber x_volt = NexNumber(0, 3, "x_volt");
-NexNumber x_fet_temp = NexNumber(3, 5, "x0");
-
-NexNumber x_amp = NexNumber(0, 6, "x_amp");
+NexNumber x_ampHours = NexNumber(0, 5, "x_amphours");
+NexNumber x_amp = NexNumber(0, 9, "x_amp");
 NexProgressBar j_batt = NexProgressBar(0, 11, "j_batt");
 
-NexDSButton bt_light = NexDSButton(0, 1, "bt_light");
 NexDSButton bt_uartFront = NexDSButton(1, 8, "bt_uart_front");
 NexDSButton bt_uartRear = NexDSButton(1, 9, "bt_uart_rear");
+
+NexNumber x_fet_temp = NexNumber(3, 5, "x0");
 
 NexTouch *nex_listen_list[] =
 {
@@ -111,6 +115,8 @@ typedef struct
     long screenSaveCnt;
     int modeCnt;
     float rpm;
+    float speed;
+    float ahUsed;
     DisplayDataType prevDisplayType;
 } CtxType;
 
@@ -252,13 +258,14 @@ void extractVescData(unsigned char buf[], int bufLen)
         switch (mask) {
             case VESC_DATA1:
             DisplayData.VescData.fetTemp = buffer_get_float16((uint8_t*)buf, 10.0, &ind);
-            Ctx.rpm = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
+            DisplayData.VescData.speed = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
             DisplayData.VescData.inpVoltage = getFilteredVoltageValue((unsigned int)(buffer_get_float16((uint8_t*)buf, 10.0, &ind) * 10));
+            DisplayData.VescData.ahUsed = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
             break;
 
             case VESC_DATA2:
             DisplayData.VescData.avgInputCurrent = buffer_get_float32((uint8_t*)buf, 100.0, &ind);
-            Ctx.rpm = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
+            Ctx.speed = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
             DisplayData.VescData.batteryLevel = getFilteredBatteryValue((unsigned char)(buffer_get_float16((uint8_t*)buf, 1000.0, &ind) * 100));
             DisplayData.VescData.faultCode = buf[ind++];
             break;
@@ -359,10 +366,11 @@ void loop(void) {
         // Using two messages to reduce load spikes on the serial bus.
         if ((read_vesc_count % 2) == 0) {
             readVescData(VESC_DATA1, &Serial3);
-            n_speed.setValue((int)Ctx.rpm);
+            n_speed.setValue((int)DisplayData.VescData.speed);
             x_volt.setValue((int)(DisplayData.VescData.inpVoltage)*10);
+            x_ampHours.setValue((int)DisplayData.VescData.ahUsed);
             Serial.print("speed, volt: ");
-            Serial.print(Ctx.rpm);
+            Serial.print(DisplayData.VescData.speed);
             Serial.print(", ");
             Serial.println(DisplayData.VescData.inpVoltage*10);
         }

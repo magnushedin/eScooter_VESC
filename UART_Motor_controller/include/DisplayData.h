@@ -36,6 +36,8 @@ typedef struct
     unsigned int inpVoltage;
     unsigned char batteryLevel;
     unsigned char faultCode;
+    float speed;
+    float ahUsed;
 } VescDataType;
 
 typedef struct
