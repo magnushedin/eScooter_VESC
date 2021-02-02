@@ -65,6 +65,8 @@ NexProgressBar j_batt = NexProgressBar(0, 11, "j_batt");
 
 NexDSButton bt_uartFront = NexDSButton(1, 6, "bt_uart_front");
 NexDSButton bt_uartRear = NexDSButton(1, 7, "bt_uart_rear");
+NexSlider hBrakeScale = NexSlider(1, 20, "hBrakeScale");
+NexNumber nBrakeScaleECU = NexNumber(1, 22, "nBrakeScaleECU");
 
 NexNumber x_fet_temp = NexNumber(3, 5, "x0");
 
@@ -73,6 +75,7 @@ NexTouch *nex_listen_list[] =
     &bt_light,
     &bt_uartFront,
     &bt_uartRear,
+    &hBrakeScale,
     NULL
 };
 
@@ -85,6 +88,8 @@ int throttle_value = 0;
 int brake_value = 0;
 int throttle_count = 0;
 int brake_count = 0;
+
+int hBrakeScaleValue = 0;
 
 bool uartRear_on = true;
 bool uartFront_on = true;
@@ -126,7 +131,8 @@ static DisplayDataStructType DisplayData; // local storage of display data
 void buttonBtLight_Pop_Cbk(void *ptr)
 {
     light_on = !light_on;
-    Serial.println("Changing light");
+    Serial.print("Changing light: ");
+    Serial.println(light_on);
     digitalWrite(PIN_LIGHT_FRONT, light_on);
     digitalWrite(PIN_LIGHT_REAR, light_on);
 }
@@ -147,6 +153,15 @@ void buttonBtUartFront_Pop_Cbk(void *ptr)
     digitalWrite(LED_BUILTIN, HIGH);
     delay(100);
     digitalWrite(LED_BUILTIN, LOW);
+}
+
+void hBrakeScale_Pop_Cbk(void *ptr)
+{
+   Serial.println("Slider Call Back");
+   hBrakeScale.getValue(&hBrakeScaleValue);
+   nBrakeScaleECU.setValue((int)hBrakeScaleValue);
+   Serial.print("BrakeScaleValue: ");
+   Serial.println(hBrakeScaleValue);
 }
 
 float mapfloat(long x, long in_min, long in_max, long out_min, long out_max)
@@ -260,7 +275,7 @@ void extractVescData(unsigned char buf[], int bufLen)
             DisplayData.VescData.fetTemp = buffer_get_float16((uint8_t*)buf, 10.0, &ind);
             DisplayData.VescData.speed = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
             DisplayData.VescData.inpVoltage = getFilteredVoltageValue((unsigned int)(buffer_get_float16((uint8_t*)buf, 10.0, &ind) * 10));
-            DisplayData.VescData.ahUsed = buffer_get_float32((uint8_t*)buf, 1.0, &ind);
+            DisplayData.VescData.ahUsed = buffer_get_float32((uint8_t*)buf, 1000.0, &ind);
             break;
 
             case VESC_DATA2:
@@ -313,6 +328,7 @@ void setup(void) {
     bt_uartRear.attachPop(buttonBtUartRear_Pop_Cbk, &bt_uartRear);
     bt_uartFront.attachPop(buttonBtUartFront_Pop_Cbk, &bt_uartFront);
     //bt_uart.attachPush(buttonBtUart_Pop_Cbk, &bt_uart);
+    hBrakeScale.attachPop(hBrakeScale_Pop_Cbk, &hBrakeScale);
 
     Serial.begin(115200);  // debug serial
     // While(!Serial){;} Don't wait for Serial0, this will hang the Teensy waiting if no computer is connected to the USB.
@@ -347,6 +363,14 @@ void setup(void) {
     // Set Light defalut value at start
     digitalWrite(PIN_LIGHT_FRONT, light_on);
     digitalWrite(PIN_LIGHT_REAR,  light_on);
+
+    /* Init display system global variables */
+    sendCommand("sysLight=1");
+    sendCommand("sysUartFront=0");
+    sendCommand("sysUartRear=0");
+    sendCommand("sysMotorFront=0");
+    sendCommand("sysMotorRear=0");
+    sendCommand("sysBrakeScale=50");
 }
 
 
@@ -369,8 +393,10 @@ void loop(void) {
             n_speed.setValue((int)DisplayData.VescData.speed);
             x_volt.setValue((int)(DisplayData.VescData.inpVoltage));
             x_ampHours.setValue((int)DisplayData.VescData.ahUsed);
-            Serial.print("speed, volt: ");
+            Serial.print("speed, ahUsed, volt: ");
             Serial.print(DisplayData.VescData.speed);
+            Serial.print(", ");
+            Serial.print(DisplayData.VescData.ahUsed);
             Serial.print(", ");
             Serial.println(DisplayData.VescData.inpVoltage);
         }
